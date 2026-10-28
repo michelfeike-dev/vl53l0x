@@ -17,7 +17,7 @@ Add the component to your project's `main/idf_component.yml`:
 dependencies:
   vl53l0x:
     git: git@github.com:michelfeike-dev/vl53l0x.git
-    version: v1.2.0
+    version: v1.3.0
 ```
 
 and add `vl53l0x` to `REQUIRES` in your component's `CMakeLists.txt`.
@@ -70,6 +70,7 @@ The offset is not stored on the sensor and must be applied after every reset.
 |-------------------------------------|--------------------------------------|
 | [polling](examples/polling)         | Continuous distance measurement      |
 | [calibration](examples/calibration) | Determine and apply the range offset |
+| [accuracy](examples/accuracy)       | Measure accuracy at stepped distances |
 
 ```sh
 git clone git@github.com:michelfeike-dev/vl53l0x.git
