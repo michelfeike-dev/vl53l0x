@@ -32,10 +32,11 @@ public:
    * @param gpio_xshut optional XSHUT pin for hardware reset
    * @param gpio_gpio1 optional GPIO1 pin for measurement-ready interrupt
    * @param scl_speed_hz I2C clock frequency for this device
+   * @param offset_mikro_meter range offset applied in init() (target - measured)
    */
   VL53L0X(i2c_master_bus_handle_t i2c_bus, gpio_num_t gpio_xshut = GPIO_NUM_MAX,
           gpio_num_t gpio_gpio1 = GPIO_NUM_MAX, uint32_t scl_speed_hz = 400000,
-          uint32_t offset_mikro_meter = 0)
+          int32_t offset_mikro_meter = 0)
       : i2c_bus(i2c_bus), gpio_xshut(gpio_xshut), gpio_gpio1(gpio_gpio1),
         scl_speed_hz(scl_speed_hz), OffsetMikroMeter(offset_mikro_meter) {
     vSemaphoreCreateBinary(xSemaphore);
@@ -86,6 +87,8 @@ public:
                               VL53L0X_INTERRUPTPOLARITY_LOW))
       return false;
     if (!setTimingBudget(33000))
+      return false;
+    if (!setOffset(OffsetMikroMeter))
       return false;
     return true;
   }
