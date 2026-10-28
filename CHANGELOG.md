@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.0
+
+- Add accuracy measurement example (`examples/accuracy`)
+
 ## v1.2.0
 
 - Add offset calibration example (`examples/calibration`)
