@@ -1,10 +1,26 @@
-# ESP32_VL53L0X
+# vl53l0x
 
 C++ VL53L0X driver as an ESP-IDF component
 
+Based on [kerikun11/ESP32_VL53L0X](https://github.com/kerikun11/ESP32_VL53L0X),
+ported to the ESP-IDF I2C master driver and extended with offset calibration.
+
 ## Dependency
 
-- [ESP-IDF](https://github.com/espressif/esp-idf)
+- [ESP-IDF](https://github.com/espressif/esp-idf) >= 5.3
+
+## Installation
+
+Add the component to your project's `main/idf_component.yml`:
+
+```yaml
+dependencies:
+  vl53l0x:
+    git: git@github.com:michelfeike-dev/vl53l0x.git
+    version: v1.2.0
+```
+
+and add `vl53l0x` to `REQUIRES` in your component's `CMakeLists.txt`.
 
 ## Usage
 
@@ -29,15 +45,37 @@ if (vl.init()) {
 }
 ```
 
-## Example
+## Offset
 
-```sh
-git clone https://github.com/kerikun11/ESP32_VL53L0X.git
-cd ESP32_VL53L0X/examples/polling
-idf.py build flash monitor
+Each sensor has a small range offset that depends on the part and its
+mounting (cover glass, housing). Determine it once with the
+[calibration example](examples/calibration) and apply it in your application.
+The value is in micrometers and follows the ST convention
+`offset = actual - measured`; the sensor adds it to every range.
+
+```cpp
+// via the constructor, applied in init()
+VL53L0X vl(bus, GPIO_NUM_MAX, GPIO_NUM_MAX, 400000, -12 * 1000);
+vl.init();
+
+// or at runtime, after init()
+vl.setOffset(-12 * 1000);
 ```
 
-or open `examples/polling` directory with [PlatformIO IDE](https://platformio.org/platformio-ide)
+The offset is not stored on the sensor and must be applied after every reset.
+
+## Examples
+
+| Example                             | Description                          |
+|-------------------------------------|--------------------------------------|
+| [polling](examples/polling)         | Continuous distance measurement      |
+| [calibration](examples/calibration) | Determine and apply the range offset |
+
+```sh
+git clone git@github.com:michelfeike-dev/vl53l0x.git
+cd vl53l0x/examples/calibration
+idf.py build flash monitor
+```
 
 ## API using
 
@@ -45,3 +83,7 @@ or open `examples/polling` directory with [PlatformIO IDE](https://platformio.or
 
 - core
 - platform
+
+## License
+
+MIT, see [LICENSE](LICENSE).
