@@ -65,7 +65,7 @@ extern "C" void app_main(void)
     uint16_t data;
     int input;
     int last_input = 1;
-    int cnt = 1;
+    int target_distance = TARGET_DISTANCE_MIN;
 
     while (true)
     {
@@ -75,7 +75,7 @@ extern "C" void app_main(void)
 
         if ((input == 0) && (last_input == 1))
         {
-            ESP_LOGI(TAG, "TARGET DISTANCE: %i", cnt * TARGET_DISTANCE_DELTA);
+            ESP_LOGI(TAG, "TARGET DISTANCE: %i", target_distance);
 
             data = 0;
 
@@ -92,7 +92,15 @@ extern "C" void app_main(void)
                     vTaskDelay(portMAX_DELAY);
                 }
             }
-            cnt++;
+
+            target_distance += TARGET_DISTANCE_DELTA;
+
+            // Start a new series at the minimum distance
+            if (target_distance > TARGET_DISTANCE_MAX)
+            {
+                ESP_LOGI(TAG, "MEASUREMENT SERIES COMPLETE");
+                target_distance = TARGET_DISTANCE_MIN;
+            }
         }
 
         last_input = input;

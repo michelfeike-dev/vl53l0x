@@ -17,7 +17,7 @@ Add the component to your project's `main/idf_component.yml`:
 dependencies:
   vl53l0x:
     git: git@github.com:michelfeike-dev/vl53l0x.git
-    version: v1.3.0
+    version: v1.3.1
 ```
 
 and add `vl53l0x` to `REQUIRES` in your component's `CMakeLists.txt`.
