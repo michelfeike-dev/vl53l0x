@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.3.1
+
+- accuracy example: start at `TARGET_DISTANCE_MIN` and restart the series
+  after `TARGET_DISTANCE_MAX`
+
 ## v1.3.0
 
 - Add accuracy measurement example (`examples/accuracy`)
