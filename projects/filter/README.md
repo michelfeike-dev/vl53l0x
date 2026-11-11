@@ -1,52 +1,38 @@
 # Median Filter
 
-Applies a sliding median filter to the distance readings and evaluates the
-filtered result with the same stepped target distances as the
-[accuracy](../accuracy) project. A median filter suppresses single outliers
-without shifting the mean like an average over outliers would.
+Applies a sliding median filter to the readings and evaluates the result at
+the same stepped target distances as the [accuracy](../accuracy) project. The
+median suppresses outliers without shifting the mean.
 
-The filter can be evaluated in two ways:
-
-- **On the device:** the firmware filters the readings before logging them.
-- **Offline:** `eval/filter.py` applies the same filter to a raw log, e.g. of
-  the accuracy project, so several window sizes can be compared on one
-  measurement series.
-
-## How It Works
-
-1. Initializes the sensor with the default timing budget (33 ms) and sets the
-   offset `OFFSET_MM`.
-2. On every falling edge of the start button it logs the current target
-   distance, resets the filter and logs `NUM_MEASUREMENTS` filtered readings.
-3. The target distance advances by `DIST_STEP` per button press, from
-   `DIST_MIN` to `DIST_MAX`, then starts over.
-
-The filter is implemented in the `median` component
-(`components/median/include/median.hpp`):
+The filter is evaluated on the device (firmware) or offline
+(`eval/filter.py` on a raw accuracy log, to compare window sizes).
 
 ```cpp
-MedianFilter<5> filt;
+MedianFilter<5> filt;                  // components/median, N odd
 uint16_t filtered = filt.update(raw);
 ```
 
-`MedianFilter<N>` keeps the last `N` values in a ring buffer and returns
-their median. Until the window is full, the median is taken over the values
-received so far. `N` must be odd, which is checked at compile time.
-
 ## Hardware
 
-| Signal       | GPIO | Notes                                     |
-|--------------|------|-------------------------------------------|
-| I2C SDA      | 8    | internal pull-up enabled                  |
-| I2C SCL      | 9    | internal pull-up enabled                  |
-| Start button | 14   | active low, internal pull-up; press = GND |
+| Component    | Connection                                          |
+|--------------|-----------------------------------------------------|
+| Board        | ESP32-S3                                            |
+| VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND              |
+| Start Button | GPIO 14 → GND (active low, internal pull-up)        |
+| Target       | White, flat, larger than the field of view at `DIST_MAX` |
 
-The start pin is set by `START_PIN` at the top of `main/filter.cpp`, the I2C
-pins in the bus configuration in `app_main()`. Adjust them for your board.
+Same measurement setup as in [accuracy](../accuracy#hardware).
 
-## Configuration
+## Getting Started
 
-Set these constants at the top of `main/filter.cpp`:
+### Requirements
+
+- ESP-IDF 5.3 or later
+- Python 3 with matplotlib for the evaluation
+
+### Configuration
+
+Constants at the top of `main/filter.cpp`:
 
 | Constant           | Default | Meaning                                                     |
 |--------------------|---------|-------------------------------------------------------------|
@@ -58,32 +44,33 @@ Set these constants at the top of `main/filter.cpp`:
 | `DIST_STEP`        | 100     | Step between target distances in mm                         |
 | `NUM_MEASUREMENTS` | 100     | Readings per target distance                                |
 
-## Build and Flash
+The firmware uses the default timing budget (33 ms).
+
+### Build and Flash
 
 ```sh
+cd projects/filter
 idf.py set-target esp32s3
 idf.py build flash monitor
 ```
 
-## Procedure
+## Measurement
 
-The procedure and the measurement setup are the same as in the
-[accuracy](../accuracy#measurement-setup) project: place the target at
-`DIST_MIN`, press the start button, move the target by `DIST_STEP` and press
-again. Save the monitor output in `data/`, e.g. `data/s1.log`.
-
-The log format is the same as in the accuracy project, so both evaluation
-scripts accept it.
+Same procedure as in [accuracy](../accuracy#measurement): place the target at
+`DIST_MIN`, press the start button, move by `DIST_STEP`, repeat. Save the
+monitor output in `data/`, e.g. `data/s1.log`.
 
 ## Evaluation
 
-Both scripts need Python 3 with matplotlib, see
-[accuracy](../accuracy#setup).
+### Setup
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+pip install matplotlib
+```
 
 ### Filtered on the Device
-
-Evaluate the log of this project with the script of the accuracy project.
-The firmware uses the default timing budget, so use `-m default`:
 
 ```sh
 python3 ../accuracy/eval/evaluate.py data/s1.log -c data/s1.csv -o data/s1.png -m default
@@ -91,31 +78,24 @@ python3 ../accuracy/eval/evaluate.py data/s1.log -c data/s1.csv -o data/s1.png -
 
 ### Filtered Offline
 
-`eval/filter.py` reads a raw log, applies a median filter with window `-n`
-per target distance (reset at every `TARGET DISTANCE` line, like the
-firmware) and evaluates the filtered readings. It prints the same table and
-writes the same CSV format as `evaluate.py`, so the filtered and the raw
-results can be compared directly.
-
 ```sh
 python3 eval/filter.py ../accuracy/data/s1_ha.log -n 5 -c data/s1_ha_med5.csv -p data/s1_ha_med5.png -m high-accuracy
-python3 eval/filter.py ../accuracy/data/s1.log -n 3 -c data/s1_med3.csv -o data/s1_med3.log
 ```
 
-| Argument         | Required | Meaning                                                           |
-|------------------|----------|-------------------------------------------------------------------|
-| `log`            | no       | Raw log file; reads stdin if omitted                              |
-| `-n`, `--window` | yes      | Median filter window, odd and > 0                                 |
-| `-c`, `--csv`    | yes      | CSV file for the values of the filtered readings                  |
-| `-p`, `--plot`   | no       | Save the plot instead of showing it                               |
-| `-o`, `--output` | no       | Save the filtered log, in the same format as the input            |
-| `-m`, `--mode`   | no       | Ranging profile of the log: `default` or `high-accuracy`          |
-| `--spec`         | no       | Override the datasheet accuracy in percent of the target distance |
+| Argument         | Meaning                                         |
+|------------------|-------------------------------------------------|
+| `log`            | Raw log file; stdin if omitted                  |
+| `-n`, `--window` | Median filter window, odd (required)            |
+| `-c`, `--csv`    | CSV output (required)                           |
+| `-p`, `--plot`   | Save the plot instead of showing it             |
+| `-o`, `--output` | Save the filtered log                           |
+| `-m`, `--mode`   | `default` or `high-accuracy`                    |
+| `--spec`         | Override the datasheet accuracy in %            |
 
-The CSV columns are described in the [accuracy](../accuracy#values) project.
-CSV, PNG and log files in `data/` are ignored by Git.
+### Results
 
-Example (raw log of the accuracy project, high accuracy mode, N = 5):
+Output and CSV match the [accuracy](../accuracy#results) evaluation, so raw
+and filtered results compare directly:
 
 ```
 High Accuracy Mode: datasheet accuracy ±3 %
@@ -123,14 +103,7 @@ Median filter N=5
  Target   n     Mean    Bias    Std   RMSE        95% range   Spec ±3%  OK
     100 100    100.3    -0.3    1.1    1.2     -2.6 .. +1.9       ±3.0 yes
     200 100    206.2    -6.2    0.6    6.2     -7.4 .. -5.0       ±6.0  no
-    300 100    309.9    -9.9    0.9    9.9    -11.6 .. -8.1       ±9.0  no
 ```
 
-Compared with the raw readings, the median reduces the standard deviation
-but does not change the bias. A systematic error has to be corrected by
-calibration, not by filtering.
-
-## Related Projects
-
-- [accuracy](../accuracy): raw measurement series and evaluation script
-- [calibration](../calibration): determine `OFFSET_MM`
+The median reduces the standard deviation but not the bias. A systematic
+error has to be corrected by calibration, not by filtering.
