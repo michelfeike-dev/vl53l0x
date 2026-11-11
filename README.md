@@ -29,13 +29,13 @@ Measurement projects with the VL53L0X Time-of-Flight sensor.
 
 Note: 4.7 kΩ pull-ups on SDA and SCL.
 
-## Field of View
+### Field of View
 
-The light spot grows with the distance, $d = 2z \tan(12.5°)$. The target must
-be larger than the spot at every measured distance, otherwise the sensor
-measures the background.
+The cone of light grows with the distance, $d = 2\dot\tan(12.5°)$. 
 
 ![Field of View](doc/fov.png)
+
+Note: $A_{Target} > A_{FoV}$
 
 ## Software
 
