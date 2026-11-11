@@ -10,11 +10,11 @@ datasheet limit.
 | Board        | ESP32-S3                               |
 | VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, VCC → 3.3 V, GND → GND|
 | Start Pin    | GPIO 14                                |
-| Target       | White                                  |
+| [Target](../../README.md#field-of-view)      | White                                  |
 
 Note: 
 
-[$A_{Target} > A_{FoV}$](../../README.md#field-of-view) 
+$A_{Target} > A_{FoV}$ 
 
 ## Software
 
@@ -49,7 +49,7 @@ idf.py build flash monitor
 
 1. Place the target at `DIST_MIN`.
 2. Negative edge at `START_PIN`.
-3. Move the target by `DIST_STEP`, repeat step 2 up to `DIST_MAX`.
+3. Move the target by `DIST_STEP`, up to `DIST_MAX`
 4. Save the monitor output as `data/s1.log`.
 
 ## Evaluation
@@ -60,8 +60,14 @@ pip install matplotlib
 python3 eval/evaluate.py data/s1.log -c data/s1.csv -o data/s1.png -m default
 ```
 
-`-m` is `default` (±4 %) or `high-accuracy` (±3 %), matching
-`TIMING_BUDGET_US`.
+| Parameter        | Required | Description                                                    |
+|------------------|----------|----------------------------------------------------------------|
+| `log`            | no       | Log file of the measurement; reads stdin if omitted            |
+| `-c`, `--csv`    | yes      | CSV file for the results                                       |
+| `-o`, `--output` | no       | Save the plots instead of showing them; FoV plot as `fov.png`  |
+| `-m`, `--mode`   | no       | `default` (±4 %) or `high-accuracy` (±3 %), matching `TIMING_BUDGET_US`; default `default` |
+| `--spec`         | no       | Override the datasheet accuracy [%]                            |
+| `--fov`          | no       | Full field of view [°]; default 25                             |
 
 With the target distance $z$ and the readings $x_1 \dots x_n$:
 
