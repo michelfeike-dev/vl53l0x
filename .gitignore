@@ -14,9 +14,9 @@ venv/
 __pycache__/
 
 # Measurement data and evaluation results
-examples/*/data/*.log
-examples/*/data/*.csv
-examples/*/data/*.png
+projects/*/data/*.log
+projects/*/data/*.csv
+projects/*/data/*.png
 
 # Editor / OS
 .vscode/

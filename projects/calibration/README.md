@@ -1,4 +1,4 @@
-# Offset Calibration Example
+# Offset Calibration
 
 Measures the mean distance to a reference target, computes the range offset
 and applies it to the sensor. Run it once per sensor, and again after changing
@@ -7,7 +7,7 @@ use.
 
 ## How It Works
 
-On a falling edge of the start button the example:
+On a falling edge of the start button the project:
 
 1. resets the sensor offset to 0, so a previous calibration does not skew the
    result,
@@ -86,7 +86,7 @@ VL53L0X sensor(bus, GPIO_NUM_MAX, GPIO_NUM_MAX, 400000, 14 * 1000);
 sensor.init();
 ```
 
-The [accuracy](../accuracy) and [filter](../filter) examples take the offset
+The [accuracy](../accuracy) and [filter](../filter) projects take the offset
 in mm as `OFFSET_MM`.
 
 ## Troubleshooting

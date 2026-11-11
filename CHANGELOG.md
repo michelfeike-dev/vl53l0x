@@ -2,18 +2,19 @@
 
 ## Unreleased
 
-- Add median filter example (`examples/filter`) with offline filter script
-- Remove the polling example (`examples/polling`); the Quick Start in the
-  README covers the minimal use case
+- Rename `examples/` to `projects/`; the repository focuses on measurement
+  projects with the sensor
+- Add median filter project (`projects/filter`) with offline filter script
+- accuracy: evaluation script `eval/evaluate.py` with datasheet limits per
+  ranging profile and field of view plot
+- Projects: `constexpr` configuration constants, explicit includes and
+  portable format specifiers
+- Remove the polling example
 - Remove the legacy GNU Make (`component.mk`) and PlatformIO (`library.json`)
   build files; ESP-IDF 5.3 or later builds with CMake only
-- accuracy example: evaluation script `eval/evaluate.py` with datasheet
-  limits per ranging profile and field of view plot
-- Examples: `constexpr` configuration constants, explicit includes and
-  portable format specifiers
 - Ignore measurement logs and evaluation results (`data/*.log`, `*.csv`,
   `*.png`) in Git
-- Rework the documentation of the component and all examples
+- Rework the documentation with focus on the projects
 
 ## v1.3.1
 
