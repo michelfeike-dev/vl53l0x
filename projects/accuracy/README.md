@@ -10,9 +10,9 @@ datasheet limit.
 | Board        | ESP32-S3                               |
 | VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND |
 | Start Button | GPIO 14 → GND                          |
-| Target       | White, flat, larger than the field of view |
+| Target       | White, flat, larger than the [field of view](../../README.md#field-of-view) |
 
-Note: The target must fill the field of view at every distance, otherwise the
+Note: The target must fill the [field of view](../../README.md#field-of-view) at every distance, otherwise the
 sensor measures the background.
 
 ## Software
@@ -77,10 +77,3 @@ $$\sigma = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2}$$
     100 100    100.2    -0.2    1.2    1.2     -2.5 .. +2.1       ±3.0 yes
     200 100    206.2    -6.2    0.8    6.3     -7.9 .. -4.5       ±6.0  no
 ```
-
-### Field of View
-
-The light spot grows with the distance, $d = 2z \tan(12.5°)$. The target must
-be larger than the spot at every measured distance.
-
-![Field of View](doc/fov.png)

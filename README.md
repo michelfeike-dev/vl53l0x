@@ -6,6 +6,7 @@ Measurement projects with the VL53L0X Time-of-Flight sensor.
 
 - [Projects](#projects)
 - [Hardware](#hardware)
+- [Field of View](#field-of-view)
 - [Software](#software)
 - [Getting Started](#getting-started)
 - [Repository Structure](#repository-structure)
@@ -27,6 +28,14 @@ Measurement projects with the VL53L0X Time-of-Flight sensor.
 | VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND             |
 
 Note: 4.7 kΩ pull-ups on SDA and SCL.
+
+## Field of View
+
+The light spot grows with the distance, $d = 2z \tan(12.5°)$. The target must
+be larger than the spot at every measured distance, otherwise the sensor
+measures the background.
+
+![Field of View](doc/fov.png)
 
 ## Software
 
@@ -71,6 +80,7 @@ vl53l0x/
 │   ├── calibration/       Offset definition
 │   ├── accuracy/          Accuracy measurement
 │   └── filter/            Median filter
+├── doc/                   Figures
 ├── inc/VL53L0X.h          Driver class
 ├── api/                   STMicroelectronics VL53L0X API
 ├── CMakeLists.txt         ESP-IDF component definition
