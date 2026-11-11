@@ -12,7 +12,11 @@ $d_{offset} = d_{target} - d_{measured}$
 | VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND |
 | Start Pin    | GPIO 14                                |
 | Target       | White                                  |
-| [Target Size](../../README.md#field-of-view)       | ø44 mm at 100 mm                                  |
+| [Target Size](../../README.md#field-of-view)       | ø44 mm @ 100 mm                                  |
+
+Note: 
+
+$A_{Target} > A_{FoV}$
 
 ## Software
 
