@@ -31,11 +31,9 @@ Note: 4.7 kΩ pull-ups on SDA and SCL.
 
 ### Field of View
 
-The cone of light grows with the distance, $d = 2z \cdot \tan(12.5°)$. 
+The cone of light grows with the distance, $d = 2 \cdot \tan(12.5°)$. 
 
 ![Field of View](doc/fov.png)
-
-Note: $A_{Target} > A_{FoV}$
 
 ## Software
 

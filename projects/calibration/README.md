@@ -12,9 +12,7 @@ $d_{offset} = d_{target} - d_{measured}$
 | VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND |
 | Start Pin    | GPIO 14                                |
 | Target       | White                                  |
-
-Note: The [target size](../../README.md#field-of-view) must be larger than the
-field of view of the sensor (ø44 mm at 100 mm).
+| [Target Size](../../README.md#field-of-view)       | ø44 mm at 100 mm                                  |
 
 ## Software
 
