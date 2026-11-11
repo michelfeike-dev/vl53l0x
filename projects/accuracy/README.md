@@ -1,4 +1,4 @@
-# Accuracy Measurement Example
+# Accuracy Measurement
 
 Measures a series of readings at stepped target distances and evaluates how
 far the sensor deviates from the real distance. Use it to verify a
@@ -12,7 +12,7 @@ your mechanical setup.
 2. On every falling edge of the start button it logs the current target
    distance followed by `NUM_MEASUREMENTS` readings.
 3. The target distance advances by `DIST_STEP` per button press, from
-   `DIST_MIN` to `DIST_MAX`. After the last distance the example logs
+   `DIST_MIN` to `DIST_MAX`. After the last distance the project logs
    `MEASUREMENT SERIES COMPLETE` and the next press starts a new series.
 4. The Python script `eval/evaluate.py` evaluates the saved log.
 
@@ -35,7 +35,7 @@ Set these constants at the top of `main/accuracy.cpp`:
 |--------------------|---------|-------------------------------------------------------------|
 | `START_PIN`        | 14      | Start button                                                |
 | `TIMING_BUDGET_US` | 200000  | Timing budget in µs (33000 = default, 200000 = high accuracy) |
-| `OFFSET_MM`        | 28      | Offset in mm from the [calibration](../calibration) example |
+| `OFFSET_MM`        | 28      | Offset in mm from the [calibration](../calibration) project |
 | `DIST_MIN`         | 100     | First target distance in mm                                 |
 | `DIST_MAX`         | 1200    | Last target distance in mm                                  |
 | `DIST_STEP`        | 100     | Step between target distances in mm                         |
@@ -81,7 +81,7 @@ I (...) accuracy: MEASUREMENT 2: 99 [mm]
 ```
 
 If a reading is invalid, e.g. because the target does not fill the field of
-view, the example logs `MEASUREMENT FAILED` and stops. Check the setup and
+view, the project logs `MEASUREMENT FAILED` and stops. Check the setup and
 restart the board.
 
 ## Evaluation
@@ -169,7 +169,7 @@ and the diameter of the spot on the target at every measured distance. The
 target must be larger than this spot, otherwise the sensor also sees the
 background.
 
-## Related Examples
+## Related Projects
 
 - [calibration](../calibration): determine `OFFSET_MM`
 - [filter](../filter): evaluate a median filter on the same measurement series

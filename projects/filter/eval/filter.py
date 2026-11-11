@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Apply a median filter to a measurement log and evaluate the result.
 
-Reads the serial output of the accuracy or filter example and runs a
+Reads the serial output of the accuracy or filter project and runs a
 median filter with window N over the readings of each target distance.
 The filter is reset at every "TARGET DISTANCE" line, like the firmware.
 Until the window is full, the median is taken over the readings so far.
@@ -29,7 +29,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-# Reuse parsing and statistics of the accuracy example
+# Reuse parsing and statistics of the accuracy project
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "accuracy" / "eval"))
 from evaluate import (COLOR_SPEC, COLOR_TARGET, MODES,  # noqa: E402
                       evaluate, parse, print_table, spec_limit, write_csv)
