@@ -1,10 +1,9 @@
 # VL53L0X
 
-Measurement projects with the VL53L0X Time-of-Flight.
+Measurement projects with the VL53L0X Time-of-Flight sensor.
 
 ## Contents
 
-- [Features](#features)
 - [Projects](#projects)
 - [Hardware](#hardware)
 - [Software](#software)
@@ -12,27 +11,13 @@ Measurement projects with the VL53L0X Time-of-Flight.
 - [Repository Structure](#repository-structure)
 - [License](#license)
 
-## Features
-
-- **Offset Definition:** the [calibration](projects/calibration) project
-  measures a reference target and computes the offset of the sensor.
-- **Offset Compensation:** via the constructor 
-  (applied in `init()`) or at runtime with `setOffset()`, including negative
-  values.
-- **High Accuracy Mode:** via `setTimingBudget()` from 33 ms to 200 ms.
-- **Accuracy Determination:** the [accuracy](projects/accuracy) project
-  measures stepped target distances and evaluates bias, standard deviation and the
-  datasheet limit.
-- **Median Filter:** the [filter](projects/filter) project filters the
-  readings on the device or offline and evaluates the result.
-
 ## Projects
 
-| Project                             | Purpose                                              | Result                         |
-|-------------------------------------|------------------------------------------------------|--------------------------------|
-| [calibration](projects/calibration) | Offset definition of the sensor             | mm                   |
-| [accuracy](projects/accuracy)       | Sensor accuracy at stepped target distances     | CSV (bias, standard deviation, datasheet limit) |
-| [filter](projects/filter)           | Noise reduction using a median filter | mm |
+| Project                             | Purpose                                         |
+|-------------------------------------|-------------------------------------------------|
+| [calibration](projects/calibration) | Offset definition of the sensor                 |
+| [accuracy](projects/accuracy)       | Accuracy determination at stepped target distances |
+| [filter](projects/filter)           | Noise reduction using a median filter           |
 
 ## Hardware
 
@@ -41,12 +26,12 @@ Measurement projects with the VL53L0X Time-of-Flight.
 | Board        | ESP32-S3                                           |
 | VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND             |
 
-Note: Pull Up 4.7 kΩ 
+Note: 4.7 kΩ pull-ups on SDA and SCL.
 
 ## Software
 
-- ESP-IDF 5.3 
-- Python 3 
+- ESP-IDF 5.3
+- Python 3, matplotlib
 - Official ST VL53L0X API ([STSW-IMG005](https://www.st.com/en/embedded-software/stsw-img005.html))
 - C++ wrapper [kerikun11/ESP32_VL53L0X](https://github.com/kerikun11/ESP32_VL53L0X)
 
@@ -76,22 +61,19 @@ dependencies:
     version: v1.3.1
 ```
 
-and `vl53l0x` added to `REQUIRES` in the component's `CMakeLists.txt`.
-`read()` returns `false` if the sensor reports an invalid range status, e.g.
-when no target is within range. The public interface is documented in
-[inc/VL53L0X.h](inc/VL53L0X.h).
+Add `vl53l0x` to `REQUIRES` in the component's `CMakeLists.txt`.
 
 ## Repository Structure
 
 ```
 vl53l0x/
 ├── projects/
-│   ├── calibration/       Offset determination
-│   ├── accuracy/          Accuracy measurement and evaluate.py
-│   └── filter/            Median filter and filter.py
+│   ├── calibration/       Offset definition
+│   ├── accuracy/          Accuracy measurement
+│   └── filter/            Median filter
 ├── inc/VL53L0X.h          Driver class
-├── api/                   STMicroelectronics VL53L0X API (core, platform)
-├── CMakeLists.txt         ESP-IDF component definition of the driver
+├── api/                   STMicroelectronics VL53L0X API
+├── CMakeLists.txt         ESP-IDF component definition
 ├── idf_component.yml      Component manager manifest
 └── CHANGELOG.md
 ```
