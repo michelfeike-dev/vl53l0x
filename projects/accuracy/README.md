@@ -29,8 +29,8 @@ Note:
 
 | Constant           | Default | Meaning                                      |
 |--------------------|---------|----------------------------------------------|
-| `OFFSET_MM`        | 28      | Sennsor offset    |
-| `TIMING_BUDGET_US` | 33000  | 33000 = default, 200000 = high accuracy      |
+| `OFFSET_MM`        | 28      | Sensor offset [mm]                           |
+| `TIMING_BUDGET_US` | 33000   | 33000 = default, 200000 = high accuracy      |
 | `DIST_MIN`         | 100     | Target distance minimum [mm]                  |
 | `DIST_MAX`         | 1200    | Target distance maximum [mm]                   |
 | `DIST_STEP`        | 100     | Delta distance [mm]                                   |
@@ -47,18 +47,17 @@ idf.py build flash monitor
 
 ### Measurement
 
-1. Place the target at `DIST_MIN`
-2. Negative edge at `START_PIN`
-3. Move the target by `DIST_STEP` 
-...
-4. Save monitor output `data/s1.log`.
+1. Place the target at `DIST_MIN`.
+2. Negative edge at `START_PIN`.
+3. Move the target by `DIST_STEP`, repeat step 2 up to `DIST_MAX`.
+4. Save the monitor output as `data/s1.log`.
 
 ## Evaluation
 
 ```sh
 python3 -m venv .venv && source .venv/bin/activate
 pip install matplotlib
-python3 eval/evaluate.py data/s1.log -c data/s1.csv -o data/s1.png -m high-accuracy
+python3 eval/evaluate.py data/s1.log -c data/s1.csv -o data/s1.png -m default
 ```
 
 `-m` is `default` (±4 %) or `high-accuracy` (±3 %), matching
