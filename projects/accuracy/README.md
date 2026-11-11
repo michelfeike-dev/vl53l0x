@@ -14,7 +14,7 @@ datasheet limit.
 
 Note: 
 
-[Target Size](../../README.md#field-of-view): $A_{Target} > A_{FoV}$
+[$A_{Target} > A_{FoV}$](../../README.md#field-of-view) 
 
 ## Software
 
@@ -29,12 +29,13 @@ Note:
 
 | Constant           | Default | Meaning                                      |
 |--------------------|---------|----------------------------------------------|
-| `OFFSET_MM`        | 28      | Offset from [calibration](../calibration)    |
-| `TIMING_BUDGET_US` | 200000  | 33000 = default, 200000 = high accuracy      |
-| `DIST_MIN`         | 100     | First target distance in mm                  |
-| `DIST_MAX`         | 1200    | Last target distance in mm                   |
-| `DIST_STEP`        | 100     | Step in mm                                   |
+| `OFFSET_MM`        | 28      | Sennsor offset    |
+| `TIMING_BUDGET_US` | 33000  | 33000 = default, 200000 = high accuracy      |
+| `DIST_MIN`         | 100     | Target distance minimum [mm]                  |
+| `DIST_MAX`         | 1200    | Target distance maximum [mm]                   |
+| `DIST_STEP`        | 100     | Delta distance [mm]                                   |
 | `NUM_MEASUREMENTS` | 100     | Readings per distance                        |
+| `START_PIN`        | 14      | Input         |
 
 ### Build and Flash
 
@@ -46,9 +47,11 @@ idf.py build flash monitor
 
 ### Measurement
 
-1. Place the target at `DIST_MIN` and press the start button.
-2. Move the target by `DIST_STEP` and press again, up to `DIST_MAX`.
-3. Save the monitor output as `data/s1.log`.
+1. Place the target at `DIST_MIN`
+2. Negative edge at `START_PIN`
+3. Move the target by `DIST_STEP` 
+...
+4. Save monitor output `data/s1.log`.
 
 ## Evaluation
 

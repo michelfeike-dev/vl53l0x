@@ -12,7 +12,7 @@
 static const char *TAG = "accuracy";
 
 constexpr gpio_num_t START_PIN = GPIO_NUM_14;
-constexpr uint32_t TIMING_BUDGET_US = 200000;
+constexpr uint32_t TIMING_BUDGET_US = 33000;
 constexpr int32_t OFFSET_MM = 28;
 constexpr int DIST_MIN = 100, DIST_MAX = 1200, DIST_STEP = 100;
 constexpr int NUM_MEASUREMENTS = 100;
@@ -51,10 +51,10 @@ extern "C" void app_main(void) {
     vTaskDelay(portMAX_DELAY);
   }
 
-  ESP_LOGI(TAG, "SENSOR HIGH ACCURACY MODE");
+  ESP_LOGI(TAG, "SENSOR MODE");
 
   if (!sensor.setTimingBudget(TIMING_BUDGET_US)) {
-    ESP_LOGE(TAG, "HIGH ACCURACY MODE FAILED");
+    ESP_LOGE(TAG, "SENSOR MODE FAILED");
     vTaskDelay(portMAX_DELAY);
   }
 
