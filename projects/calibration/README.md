@@ -13,7 +13,7 @@ $d_{offset} = d_{target} - d_{measured}$
 | Start Pin    | GPIO 14                                |
 | Target       | White                                  |
 
-Note: The [target size](../accuracy#field-of-view) must be larger than the
+Note: The [target size](../../README.md#field-of-view) must be larger than the
 field of view of the sensor (ø44 mm at 100 mm).
 
 ## Software
