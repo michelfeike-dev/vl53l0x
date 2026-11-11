@@ -9,7 +9,7 @@ $d_{offset} = d_{target} - d_{measured}$
 | Component    | Connection                             |
 |--------------|----------------------------------------|
 | Board        | ESP32-S3                               |
-| VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND |
+| VL53L0X      | SDA → GPIO 8<br>SCL → GPIO 9<br>VCC → 3.3<br>GND → GND |
 | Start Pin    | GPIO 14                                |
 | Target       | White                                  |
 | [Target Size](../../README.md#field-of-view)       | ø44 mm @ 100 mm                                  |
