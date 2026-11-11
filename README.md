@@ -40,7 +40,7 @@ Note: 4.7 kΩ pull-ups on SDA and SCL.
 ### Build and Flash
 
 ```sh
-git clone git@github.com:michelfeike-dev/vl53l0x.git
+git clone https://github.com/michelfeike-dev/vl53l0x.git
 cd vl53l0x/projects/calibration
 idf.py set-target esp32s3
 idf.py build flash monitor
@@ -57,7 +57,7 @@ The driver can be added as a component via the ESP Component Manager in
 ```yaml
 dependencies:
   vl53l0x:
-    git: git@github.com:michelfeike-dev/vl53l0x.git
+    git: https://github.com/michelfeike-dev/vl53l0x.git
     version: v1.3.1
 ```
 
