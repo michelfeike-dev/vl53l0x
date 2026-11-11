@@ -62,24 +62,25 @@ python3 eval/evaluate.py data/s1.log -c data/s1.csv -o data/s1.png -m default
 
 | Parameter        | Required | Description                                                    |
 |------------------|----------|----------------------------------------------------------------|
-| `log`            | no       | Log file of the measurement; reads stdin if omitted            |
-| `-c`, `--csv`    | yes      | CSV file for the results                                       |
-| `-o`, `--output` | no       | Save the plots instead of showing them; FoV plot as `fov.png`  |
+| `log`            | no       | Input file of the measurement            |
+| `-c`, `--csv`    | yes      | Output CSV file                                       |
+| `-o`, `--output` | no       | Save accuracy and field of view |
 | `-m`, `--mode`   | no       | `default` (±4 %) or `high-accuracy` (±3 %), matching `TIMING_BUDGET_US`; default `default` |
 | `--spec`         | no       | Override the datasheet accuracy [%]                            |
 | `--fov`          | no       | Full field of view [°]; default 25                             |
 
-With the target distance $z$ and the readings $x_1 \dots x_n$:
+Target distance: $z$ 
+Measurements: $x_1 \dots x_n$:
 
-**Bias**: systematic error, corrected by calibration
+**Bias**:
 
 $$b = \frac{1}{n}\sum_{i=1}^{n}(z - x_i) = z - \bar{x}$$
 
-**Standard deviation**: noise, reduced by timing budget or filtering
+**Standard deviation**:
 
 $$\sigma = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2}$$
 
-**OK**: $b \pm 2\sigma$ (95 % of the readings) lies within the datasheet limit.
+Target distance $z$
 
 ```
  Target   n     Mean    Bias    Std   RMSE        95% range   Spec ±3%  OK
