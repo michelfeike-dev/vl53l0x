@@ -35,7 +35,7 @@ The cone of light grows with the distance:
 
 $y = 2\cdot z \cdot \tan(12.5°)$
 
-$A_{FoV} = 2\pi \cdot y$
+$A_{FoV} = \pi \cdot \left(\frac{y}{2}\right)^2$
 
 ![Field of View](doc/fov.png)
 
