@@ -13,6 +13,9 @@ $d_{offset} = d_{target} - d_{measured}$
 | Start Pin    | GPIO 14                                |
 | Target       | White                                  |
 
+Note: The [target size](../accuracy#field-of-view) must be larger than the
+field of view of the sensor (ø44 mm at 100 mm).
+
 ## Software
 
 - ESP-IDF 5.3
@@ -27,7 +30,7 @@ $d_{offset} = d_{target} - d_{measured}$
 |--------------------|---------|----------------------------|
 | `TARGET_DISTANCE`  | 100     | Target distance [mm]       |
 | `NUM_MEASUREMENTS` | 100     | Number of measurements     |
-| `START_PIN`        | 14      | H         |
+| `START_PIN`        | 14      | Input         |
 
 ### Build and Flash
 
