@@ -1,0 +1,80 @@
+What do I measure? 
+Accuracy VL53L0X
+
+How do I measure?
+Target Distance [mm]: 100 <= z <= 1200
+Target: DINA4 Paper
+Number of Measurements: 100
+
+What do I measure?
+
+
+Bullshit
+
+
+Im Default Mode (33ms, bis 1200mm < +- 4%) arbeitet der Sensor bis zu einem Abstand von etwa 700mm im Rahmen der Messgenauigkeit von 4%. 
+Zwei Extremwerte sind charakteristisch für den Sensor. Ein Minimum im ersten Drittel und ein Maximum im letzten Drittel. 
+Verantwortlich ist die Überlagerung bzw. das Umgebungsrauschen (Field of View > Target). Mit zunehmendem Abstand zum Target misst der Sensor überwiegend den Untergrund sowie den Hintergrund.  
+Zusätzlich beeinflusst ein systematischer Ablesefehler bei der Positionierung des Targets die Messergebnisse. 
+
+
+ 
+
+Der Graph verläuft im Übergang überwiegend linear.
+Der optimale Arbeitsbereich ergibt sich im Nullpunkt. Er befindet sich im Bereich von ca. 550 - 650mm. 
+Hier arbeitet der Sensor mit einer Genauigkeit von mindestens +- 2%.
+
+Im High Accuracy Mode (200ms, bis 1200mm < +-3%) 
+
+- In einem bestimmten Bereich misst der Sensor die Distanz zunehmen zu nah. Woran liegt das?
+
+
+- Der High Accuracy Modus bringt wenig Verbesserung (genauer Wert) kostet allerdings Perfmonace. 
+- Die Periodendauer wächst von 33ms auf 200ms. 
+
+- Die 
+
+
+Optimaler Arbeitsbereich: 
+100 - 150mm
+550 - 650mm
+
+
+
+What's the problem?
+Measurment Setup
+Noise (Background, Ground)
+
+How can I solve it?
+Calibration (Offset, CrossTalk)
+Sensor Height = Field of View @ Maximum Distance 
+Target Size > Field of View @ Maximum Distance
+
+Learnings?
+
+Which problems does this post solve for you? 
+
+
+Which problems does the repository solve for you? 
+Offset Definition
+Offset Compensation
+Accuracy Measurement
+Median Filter
+
+Was ist das Problem? 
+Ich messe falsch. 
+
+Wieso messe ich falsch? 
+Weil ich mir im Vorfeld keine Gedanken über den Messaufbau gemacht habe. 
+
+Wie äußert sich das?
+Meine Interpretation der Messergebnisse ist falsch. 
+
+Wie löse ich das Problem? 
+Sensortechnologie verstehen, Messaufbau planen, 
+
+
+
+
+
+
