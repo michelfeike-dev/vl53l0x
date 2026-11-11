@@ -2,28 +2,32 @@
 
 Offset definition of the VL53L0X with a reference target.
 
+$d_{offset} = d_{target} - d_{measured}$
+
 ## Hardware
 
 | Component    | Connection                             |
 |--------------|----------------------------------------|
 | Board        | ESP32-S3                               |
 | VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND |
-| Start Button | GPIO 14 → GND                          |
-| Target       | White, flat, 100 mm                    |
+| Start Pin    | GPIO 14                                |
+| Target       | White                                  |
 
 ## Software
 
 - ESP-IDF 5.3
+- Official ST VL53L0X API [STSW-IMG005](https://www.st.com/en/embedded-software/stsw-img005.html)
+- C++ wrapper [kerikun11/ESP32_VL53L0X](https://github.com/kerikun11/ESP32_VL53L0X)
 
 ## Getting Started
 
 ### Configuration
 
-| Constant           | Default | Meaning                    |
+| Constant           | Default | Description                |
 |--------------------|---------|----------------------------|
-| `TARGET_DISTANCE`  | 100     | Target distance in mm      |
-| `NUM_MEASUREMENTS` | 100     | Readings for the mean      |
-| `START_PIN`        | 14      | Start button               |
+| `TARGET_DISTANCE`  | 100     | Target distance [mm]       |
+| `NUM_MEASUREMENTS` | 100     | Number of measurements     |
+| `START_PIN`        | 14      | H         |
 
 ### Build and Flash
 
@@ -35,19 +39,10 @@ idf.py build flash monitor
 
 ### Measurement
 
-Place the target at `TARGET_DISTANCE` and press the start button. The
-project computes `offset = TARGET_DISTANCE - mean` and applies it:
+Place the target at `TARGET_DISTANCE`.
+A falling edge on the `START_PIN` pin initiates the measurement. 
 
 ```
 I (...) calibration: OFFSET = 14 [mm]
 I (...) calibration: REFERENCE MEASUREMENT: 102 [mm]
 ```
-
-## Evaluation
-
-- **Reference measurement** ≈ `TARGET_DISTANCE`
-- **Offset** repeatable on a second run
-- **Bias** ≈ 0 at 100 mm in [accuracy](../accuracy)
-
-Use the offset as `OFFSET_MM` in [accuracy](../accuracy) and
-[filter](../filter).
