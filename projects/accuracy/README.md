@@ -19,6 +19,8 @@ sensor measures the background.
 
 - ESP-IDF 5.3
 - Python 3, matplotlib
+- Official ST VL53L0X API ([STSW-IMG005](https://www.st.com/en/embedded-software/stsw-img005.html))
+- C++ wrapper [kerikun11/ESP32_VL53L0X](https://github.com/kerikun11/ESP32_VL53L0X)
 
 ## Getting Started
 
@@ -58,14 +60,27 @@ python3 eval/evaluate.py data/s1.log -c data/s1.csv -o data/s1.png -m high-accur
 `-m` is `default` (±4 %) or `high-accuracy` (±3 %), matching
 `TIMING_BUDGET_US`.
 
-| Value | Meaning                                       |
-|-------|-----------------------------------------------|
-| Bias  | `target - mean`, corrected by calibration     |
-| Std   | Noise, reduced by timing budget or filtering  |
-| OK    | `bias ± 2σ` within the datasheet limit        |
+With the target distance $z$ and the readings $x_1 \dots x_n$:
+
+**Bias**: systematic error, corrected by calibration
+
+$$b = \frac{1}{n}\sum_{i=1}^{n}(z - x_i) = z - \bar{x}$$
+
+**Standard deviation**: noise, reduced by timing budget or filtering
+
+$$\sigma = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2}$$
+
+**OK**: $b \pm 2\sigma$ (95 % of the readings) lies within the datasheet limit.
 
 ```
  Target   n     Mean    Bias    Std   RMSE        95% range   Spec ±3%  OK
     100 100    100.2    -0.2    1.2    1.2     -2.5 .. +2.1       ±3.0 yes
     200 100    206.2    -6.2    0.8    6.3     -7.9 .. -4.5       ±6.0  no
 ```
+
+### Field of View
+
+The light spot grows with the distance, $d = 2z \tan(12.5°)$. The target must
+be larger than the spot at every measured distance.
+
+![Field of View](doc/fov.png)
