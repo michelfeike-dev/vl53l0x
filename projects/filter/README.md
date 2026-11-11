@@ -12,7 +12,7 @@ uint16_t filtered = filt.update(raw);
 | Component    | Connection                             |
 |--------------|----------------------------------------|
 | Board        | ESP32-S3                               |
-| VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, VCC → 3.3 V, GND → GND|
+| VL53L0X      | SDA → GPIO 8<br>SCL → GPIO 9<br>VCC → 3.3 V<br>GND → GND|
 
 ## Software
 
