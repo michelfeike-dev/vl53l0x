@@ -8,12 +8,13 @@ datasheet limit.
 | Component    | Connection                             |
 |--------------|----------------------------------------|
 | Board        | ESP32-S3                               |
-| VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND |
-| Start Button | GPIO 14 → GND                          |
-| Target       | White, flat, larger than the [field of view](../../README.md#field-of-view) |
+| VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, VCC → 3.3 V, GND → GND|
+| Start Pin    | GPIO 14                                |
+| Target       | White                                  |
 
-Note: The target must fill the [field of view](../../README.md#field-of-view) at every distance, otherwise the
-sensor measures the background.
+Note: 
+
+[Target Size](../../README.md#field-of-view): $A_{Target} > A_{FoV}$
 
 ## Software
 
