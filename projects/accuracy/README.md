@@ -8,7 +8,7 @@ datasheet limit.
 | Component    | Connection                             |
 |--------------|----------------------------------------|
 | Board        | ESP32-S3                               |
-| VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, VCC → 3.3 V, GND → GND|
+| VL53L0X      | SDA → GPIO 8<br>SCL → GPIO 9<br>VCC → 3.3 V<br>GND → GND|
 | Start Pin    | GPIO 14                                |
 | [Target](../../README.md#field-of-view)      | White                                  |
 
@@ -30,7 +30,7 @@ $A_{Target} > A_{FoV}$
 | Constant           | Default | Meaning                                      |
 |--------------------|---------|----------------------------------------------|
 | `OFFSET_MM`        | 28      | Sensor offset [mm]                           |
-| `TIMING_BUDGET_US` | 33000   | 33000 = default, 200000 = high accuracy      |
+| `TIMING_BUDGET_US` | 33000   | 33000 = default<br>200000 = high accuracy      |
 | `DIST_MIN`         | 100     | Target distance minimum [mm]                  |
 | `DIST_MAX`         | 1200    | Target distance maximum [mm]                   |
 | `DIST_STEP`        | 100     | Delta distance [mm]                                   |
@@ -65,12 +65,13 @@ python3 eval/evaluate.py data/s1.log -c data/s1.csv -o data/s1.png -m default
 | `log`            | no       | Input file of the measurement            |
 | `-c`, `--csv`    | yes      | Output CSV file                                       |
 | `-o`, `--output` | no       | Save accuracy and field of view |
-| `-m`, `--mode`   | no       | `default` (±4 %) or `high-accuracy` (±3 %), matching `TIMING_BUDGET_US`; default `default` |
+| `-m`, `--mode`   | no       | `default` (±4 %)<br>`high-accuracy` (±3 %)<br>matching `TIMING_BUDGET_US`<br>default `default` |
 | `--spec`         | no       | Override the datasheet accuracy [%]                            |
-| `--fov`          | no       | Full field of view [°]; default 25                             |
+| `--fov`          | no       | Full field of view [°]<br>default 25                             |
 
-Target distance: $z$ 
-Measurements: $x_1 \dots x_n$:
+**Target distance**: $z$ 
+
+**Measurements**: $x_1 \dots x_n$:
 
 **Bias**:
 
@@ -80,7 +81,9 @@ $$b = \frac{1}{n}\sum_{i=1}^{n}(z - x_i) = z - \bar{x}$$
 
 $$\sigma = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2}$$
 
-Target distance $z$
+**RMSE**:
+
+$$\mathrm{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(z - x_i)^2} \approx \sqrt{b^2 + \sigma^2}$$
 
 ```
  Target   n     Mean    Bias    Std   RMSE        95% range   Spec ±3%  OK
