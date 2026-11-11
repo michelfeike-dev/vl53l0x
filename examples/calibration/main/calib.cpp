@@ -1,15 +1,21 @@
-#include <stdio.h>
-#include <inttypes.h>
-#include <vector>
+#include <cinttypes>
+#include <cstdint>
 #include <numeric>
-#include "driver/gpio.h"
+#include <vector>
+
 #include "VL53L0X.h"
+#include "driver/gpio.h"
+#include "driver/i2c_master.h"
+#include "esp_err.h"
+#include "esp_log.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 static const char *TAG = "calibration";
 
-#define START_PIN GPIO_NUM_14
-#define TARGET_DISTANCE 100
-#define NUM_MEASUREMENTS 100
+constexpr gpio_num_t START_PIN = GPIO_NUM_14;
+constexpr int TARGET_DISTANCE = 100;
+constexpr int NUM_MEASUREMENTS = 100;
 
 extern "C" void app_main(void)
 {
@@ -46,11 +52,11 @@ extern "C" void app_main(void)
     }
 
     ESP_LOGI(TAG, "OFFSET CALIBRATION");
-    ESP_LOGI(TAG, "Target distance: %i mm", TARGET_DISTANCE);
+    ESP_LOGI(TAG, "Target distance: %d mm", TARGET_DISTANCE);
     ESP_LOGI(TAG, "Target color: white");
-    ESP_LOGI(TAG, "Number of measurements: %i", NUM_MEASUREMENTS);
+    ESP_LOGI(TAG, "Number of measurements: %d", NUM_MEASUREMENTS);
     ESP_LOGI(TAG, "Type: Mean Offset");
-    ESP_LOGI(TAG, "START CALIBRATION: F_TRIG PIN%i", START_PIN);
+    ESP_LOGI(TAG, "START CALIBRATION: F_TRIG PIN%d", static_cast<int>(START_PIN));
 
     uint16_t data;
     std::vector<uint16_t> meas;
@@ -79,7 +85,7 @@ extern "C" void app_main(void)
             {
                 if (sensor.read(&data))
                 {
-                    ESP_LOGI(TAG, "MEASUREMENT %i: %u [mm]", i, data);
+                    ESP_LOGI(TAG, "MEASUREMENT %d: %" PRIu16 " [mm]", i, data);
                     meas.push_back(data);
                     vTaskDelay(pdMS_TO_TICKS(100));
                 }
@@ -106,7 +112,7 @@ extern "C" void app_main(void)
             if (sensor.setOffset(offset_um))
             {
                 sensor.read(&data);
-                ESP_LOGI(TAG, "REFERENCE MEASUREMENT: %u [mm]", data);
+                ESP_LOGI(TAG, "REFERENCE MEASUREMENT: %" PRIu16 " [mm]", data);
             }
             else
             {
