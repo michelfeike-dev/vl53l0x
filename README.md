@@ -22,10 +22,10 @@ Measurement projects with the VL53L0X Time-of-Flight sensor.
 
 ## Hardware
 
-| Component    | Connection                                         |
-|--------------|----------------------------------------------------|
-| Board        | ESP32-S3                                           |
-| VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND             |
+| Component    | Connection                             |
+|--------------|----------------------------------------|
+| Board        | ESP32-S3                               |
+| VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, VCC → 3.3 V, GND → GND|
 
 Note: 4.7 kΩ pull-ups on SDA and SCL.
 
