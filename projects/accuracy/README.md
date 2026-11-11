@@ -19,7 +19,7 @@ sensor measures the background.
 
 - ESP-IDF 5.3
 - Python 3, matplotlib
-- Official ST VL53L0X API ([STSW-IMG005](https://www.st.com/en/embedded-software/stsw-img005.html))
+- Official ST VL53L0X API [STSW-IMG005](https://www.st.com/en/embedded-software/stsw-img005.html)
 - C++ wrapper [kerikun11/ESP32_VL53L0X](https://github.com/kerikun11/ESP32_VL53L0X)
 
 ## Getting Started
