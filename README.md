@@ -92,4 +92,5 @@ vl53l0x/
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE). The ST VL53L0X API in `api/` is licensed under
+BSD-3-Clause by STMicroelectronics.
