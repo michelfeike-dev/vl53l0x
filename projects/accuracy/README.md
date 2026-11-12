@@ -123,12 +123,8 @@ python3 eval/filter.py data/s1.log -n 5 -c data/s1_med5.csv -p data/s1_med5.png 
 | `-m`, `--mode`   | no       | `default` (±4 %)<br>`high-accuracy` (±3 %)<br>default `default` |
 | `--spec`         | no       | Override the datasheet accuracy [%]          |
 
-Raw readings, `data/s1.log`:
+Raw readings (left) and median filter $N = 5$ (right), `data/s1.log`:
 
-![Raw](doc/s1_raw.png)
-
-Median filter $N = 5$, same log:
-
-![Median N=5](doc/s1_med5.png)
+<img src="doc/s1_raw.png" alt="Raw" width="49%"> <img src="doc/s1_med5.png" alt="Median N=5" width="49%">
 
 The $2\sigma$ band becomes narrower, the bias stays the same.
