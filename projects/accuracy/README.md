@@ -30,7 +30,7 @@ $A_{Target} > A_{FoV}$
 | Constant           | Default | Meaning                                      |
 |--------------------|---------|----------------------------------------------|
 | `OFFSET_MM`        | 28      | Sensor offset [mm]                           |
-| `TIMING_BUDGET_US` | 33000   | 33000 = default<br>200000 = high accuracy      |
+| `TIMING_BUDGET_US` | 33000   | default mode = 33000us<br> high accuracy mode = 200000us      |
 | `DIST_MIN`         | 100     | Target distance minimum [mm]                  |
 | `DIST_MAX`         | 1200    | Target distance maximum [mm]                   |
 | `DIST_STEP`        | 100     | Delta distance [mm]                                   |
@@ -90,3 +90,47 @@ $$\mathrm{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(z - x_i)^2} \approx \sqrt{b^2 
     100 100    100.2    -0.2    1.2    1.2     -2.5 .. +2.1       ±3.0 yes
     200 100    206.2    -6.2    0.8    6.3     -7.9 .. -4.5       ±6.0  no
 ```
+
+## Improvements
+
+### Median-Filter
+
+A sliding median over the last $N$ readings ($N$ odd) suppresses outliers:
+
+$$\tilde{x}_k = \operatorname{median}(x_{k-N+1}, \dots, x_k)$$
+
+The readings in the window are sorted and the middle one is taken, so up to
+$(N-1)/2$ outliers per window have no effect. The median reduces $\sigma$,
+not the bias $b$.
+
+**Timing**: one reading takes $T \approx$ `TIMING_BUDGET_US` + 10 ms. The
+median follows a change of the distance with a delay of $\frac{N-1}{2} \cdot T$:
+
+| Timing budget | $T$     | Delay $N = 5$ |
+|---------------|---------|---------------|
+| 33 ms         | ≈ 43 ms | ≈ 86 ms       |
+| 200 ms        | ≈ 210 ms | ≈ 420 ms     |
+
+`eval/filter.py` applies the median filter offline to a raw log and
+evaluates it like `evaluate.py`:
+
+```sh
+python3 eval/filter.py data/s1.log -n 5 -c data/s1_med5.csv -p data/s1_med5.png -m default
+```
+
+| Parameter        | Required | Description                                  |
+|------------------|----------|----------------------------------------------|
+| `log`            | no       | Input file of the measurement                |
+| `-n`, `--window` | yes      | Window $N$, odd                              |
+| `-c`, `--csv`    | yes      | Output CSV file                              |
+| `-p`, `--plot`   | no       | Save the plot                                |
+| `-o`, `--output` | no       | Save the filtered log                        |
+| `-m`, `--mode`   | no       | `default` (±4 %)<br>`high-accuracy` (±3 %)<br>default `default` |
+| `--spec`         | no       | Override the datasheet accuracy [%]          |
+
+Example `data/s1.log`, raw vs. median $N = 5$:
+
+| Target | Std raw | Std $N = 5$ | OK raw | OK $N = 5$ |
+|--------|---------|-------------|--------|------------|
+| 200    | 1.8     | 1.1         | no     | yes        |
+| 300    | 2.4     | 1.3         | no     | yes        |

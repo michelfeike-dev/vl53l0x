@@ -8,7 +8,7 @@ Until the window is full, the median is taken over the readings so far.
 
 Prints bias, standard deviation and RMSE per target distance of the
 filtered readings. Plots the bias with a +-2 sigma band against the
-datasheet accuracy limit, like ../../accuracy/eval/evaluate.py.
+datasheet accuracy limit, like evaluate.py.
 
 Saves the values as CSV, in the same format as evaluate.py, so they can
 be compared with the CSV of the raw readings. Optionally saves the
@@ -25,12 +25,10 @@ import argparse
 import re
 import sys
 from collections import deque
-from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-# Reuse parsing and statistics of the accuracy project
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "accuracy" / "eval"))
+# Reuse parsing and statistics of evaluate.py in the same directory
 from evaluate import (COLOR_SPEC, COLOR_TARGET, MODES,  # noqa: E402
                       evaluate, parse, print_table, spec_limit, write_csv)
 
