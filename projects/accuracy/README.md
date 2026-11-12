@@ -95,25 +95,20 @@ $$\mathrm{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(z - x_i)^2} \approx \sqrt{b^2 
 
 ### Median-Filter
 
-A sliding median over the last $N$ readings ($N$ odd) suppresses outliers:
+A sliding median over $N$ readings reduces $\sigma$: 
 
 $$\tilde{x}_k = \mathrm{median}(x_{k-N+1}, \dots, x_k)$$
 
-The readings in the window are sorted and the middle one is taken, so up to
-$(N-1)/2$ outliers per window have no effect. The median reduces $\sigma$,
-not the bias $b$.
+The median follows a change of the distance with a delay of $\frac{N-1}{2} \cdot T$:
 
-**Timing**: one reading takes $T \approx$ `TIMING_BUDGET_US` + 10 ms. The
-median follows a change of the distance with a delay of $\frac{N-1}{2} \cdot T$:
+**Timing**: $T \approx$ `TIMING_BUDGET_US`
 
-| Timing budget | $T$     | Delay $N = 5$ |
+| Timing budget | Delay $N = 3$     | Delay $N = 5$ |
 |---------------|---------|---------------|
-| 33 ms         | ≈ 43 ms | ≈ 86 ms       |
-| 200 ms        | ≈ 210 ms | ≈ 420 ms     |
+| 33 ms         | ≈ 33 ms | ≈ 66 ms       |
+| 200 ms        | ≈ 200 ms | ≈ 400 ms     |
 
-`eval/filter.py` applies the median filter offline to a raw log and
-evaluates it like `evaluate.py`:
-
+#### Evaluation
 ```sh
 python3 eval/filter.py data/s1.log -n 5 -c data/s1_med5.csv -p data/s1_med5.png -m default
 ```
@@ -128,9 +123,12 @@ python3 eval/filter.py data/s1.log -n 5 -c data/s1_med5.csv -p data/s1_med5.png 
 | `-m`, `--mode`   | no       | `default` (±4 %)<br>`high-accuracy` (±3 %)<br>default `default` |
 | `--spec`         | no       | Override the datasheet accuracy [%]          |
 
-Example `data/s1.log`, raw vs. median $N = 5$:
+Raw readings, `data/s1.log`:
 
-| Target | Std raw | Std $N = 5$ | OK raw | OK $N = 5$ |
-|--------|---------|-------------|--------|------------|
-| 200    | 1.8     | 1.1         | no     | yes        |
-| 300    | 2.4     | 1.3         | no     | yes        |
+![Raw](doc/s1_raw.png)
+
+Median filter $N = 5$, same log:
+
+![Median N=5](doc/s1_med5.png)
+
+The $2\sigma$ band becomes narrower, the bias stays the same.
