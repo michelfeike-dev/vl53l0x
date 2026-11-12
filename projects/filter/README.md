@@ -50,13 +50,11 @@ Same procedure as in [accuracy](../accuracy). Save the monitor output as
 ```sh
 python3 -m venv .venv && source .venv/bin/activate
 pip install matplotlib
-
-# Filtered on the device (default timing budget)
 python3 ../accuracy/eval/evaluate.py data/s1.log -c data/s1.csv -o data/s1.png -m default
-
-# Filtered offline, raw log of accuracy, window -n
-python3 eval/filter.py ../accuracy/data/s1.log -n 5 -c data/s1_med5.csv -p data/s1_med5.png -m high-accuracy
 ```
+
+To filter a raw log offline, see
+[accuracy](../accuracy#median-filter).
 
 The output matches [accuracy](../accuracy#evaluation). The median reduces the
 standard deviation, not the bias.
