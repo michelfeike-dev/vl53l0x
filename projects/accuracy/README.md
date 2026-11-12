@@ -97,7 +97,7 @@ $$\mathrm{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(z - x_i)^2} \approx \sqrt{b^2 
 
 A sliding median over the last $N$ readings ($N$ odd) suppresses outliers:
 
-$$\tilde{x}_k = \operatorname{median}(x_{k-N+1}, \dots, x_k)$$
+$$\tilde{x}_k = \mathrm{median}(x_{k-N+1}, \dots, x_k)$$
 
 The readings in the window are sorted and the middle one is taken, so up to
 $(N-1)/2$ outliers per window have no effect. The median reduces $\sigma$,
