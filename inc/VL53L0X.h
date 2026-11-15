@@ -28,6 +28,15 @@ static constexpr uint8_t VL53L0X_I2C_ADDRESS_DEFAULT = 0x29;
 class VL53L0X {
 public:
   /**
+   * @brief Result of a range reading
+   */
+  enum class ReadStatus {
+    Done,       ///< valid range
+    OutOfRange, ///< no valid target: RangeStatus != 0 (sigma, signal or phase)
+    BusError,   ///< I2C or API error, the sensor did not respond correctly
+  };
+
+  /**
    * @param i2c_bus I2C master bus created with i2c_new_master_bus()
    * @param gpio_xshut optional XSHUT pin for hardware reset
    * @param gpio_gpio1 optional GPIO1 pin for measurement-ready interrupt
@@ -139,25 +148,29 @@ public:
 
     return true;
   }
-  bool read(uint16_t *pRangeMilliMeter) {
+  /**
+   * @brief Perform a single range reading
+   *
+   * @param pRangeMilliMeter set on Done and on OutOfRange (typically 8190 or
+   * 8191 then), undefined on BusError
+   */
+  ReadStatus read(uint16_t *pRangeMilliMeter) {
     if (gpio_gpio1 != GPIO_NUM_MAX)
       return readSingleWithInterrupt(pRangeMilliMeter);
     return readSingleWithPolling(pRangeMilliMeter);
   }
-  bool readSingleWithPolling(uint16_t *pRangeMilliMeter) {
+  ReadStatus readSingleWithPolling(uint16_t *pRangeMilliMeter) {
     VL53L0X_RangingMeasurementData_t MeasurementData;
     VL53L0X_Error status =
         VL53L0X_PerformSingleRangingMeasurement(&vl53l0x_dev, &MeasurementData);
     if (status != VL53L0X_ERROR_NONE) {
       print_pal_error(status, "VL53L0X_PerformSingleRangingMeasurement");
-      return false;
+      return ReadStatus::BusError;
     }
     *pRangeMilliMeter = MeasurementData.RangeMilliMeter;
-    if (MeasurementData.RangeStatus != 0)
-      return false;
-    return true;
+    return rangeStatus(MeasurementData);
   }
-  bool readSingleWithDelay(uint16_t *pRangeMilliMeter) {
+  ReadStatus readSingleWithDelay(uint16_t *pRangeMilliMeter) {
     TickType_t xTicksToWait =
         TimingBudgetMicroSeconds / 1000 / portTICK_PERIOD_MS;
     VL53L0X_Error status;
@@ -166,13 +179,13 @@ public:
         VL53L0X_SetDeviceMode(&vl53l0x_dev, VL53L0X_DEVICEMODE_SINGLE_RANGING);
     if (status != VL53L0X_ERROR_NONE) {
       print_pal_error(status, "VL53L0X_SetDeviceMode");
-      return false;
+      return ReadStatus::BusError;
     }
     // start measurement
     status = VL53L0X_StartMeasurement(&vl53l0x_dev);
     if (status != VL53L0X_ERROR_NONE) {
       print_pal_error(status, "VL53L0X_StartMeasurement");
-      return false;
+      return ReadStatus::BusError;
     }
     // wait
     vTaskDelay(xTicksToWait);
@@ -181,27 +194,27 @@ public:
     status = VL53L0X_GetRangingMeasurementData(&vl53l0x_dev, &MeasurementData);
     if (status != VL53L0X_ERROR_NONE) {
       print_pal_error(status, "VL53L0X_GetRangingMeasurementData");
-      return false;
+      return ReadStatus::BusError;
     }
     *pRangeMilliMeter = MeasurementData.RangeMilliMeter;
-    if (MeasurementData.RangeStatus != 0)
-      return false;
-    // clear interrupt
-    VL53L0X_ClearInterruptMask(&vl53l0x_dev, 0);
-    if (status != VL53L0X_ERROR_NONE)
-      return false;
-    return true;
+    // clear interrupt, also when the range is invalid
+    status = VL53L0X_ClearInterruptMask(&vl53l0x_dev, 0);
+    if (status != VL53L0X_ERROR_NONE) {
+      print_pal_error(status, "VL53L0X_ClearInterruptMask");
+      return ReadStatus::BusError;
+    }
+    return rangeStatus(MeasurementData);
   }
-  bool readSingleWithInterrupt(uint16_t *pRangeMilliMeter) {
+  ReadStatus readSingleWithInterrupt(uint16_t *pRangeMilliMeter) {
     if (gpio_gpio1 == GPIO_NUM_MAX)
-      return false;
+      return ReadStatus::BusError;
     VL53L0X_Error status;
     // set mode
     status =
         VL53L0X_SetDeviceMode(&vl53l0x_dev, VL53L0X_DEVICEMODE_SINGLE_RANGING);
     if (status != VL53L0X_ERROR_NONE) {
       print_pal_error(status, "VL53L0X_SetDeviceMode");
-      return false;
+      return ReadStatus::BusError;
     }
     // clear semphr
     xSemaphoreTake(xSemaphore, 0);
@@ -209,7 +222,7 @@ public:
     status = VL53L0X_StartMeasurement(&vl53l0x_dev);
     if (status != VL53L0X_ERROR_NONE) {
       print_pal_error(status, "VL53L0X_StartMeasurement");
-      return false;
+      return ReadStatus::BusError;
     }
     // wait for interrupt
     xSemaphoreTake(xSemaphore, pdMS_TO_TICKS(1000));
@@ -218,16 +231,16 @@ public:
     status = VL53L0X_GetRangingMeasurementData(&vl53l0x_dev, &MeasurementData);
     if (status != VL53L0X_ERROR_NONE) {
       print_pal_error(status, "VL53L0X_GetRangingMeasurementData");
-      return false;
+      return ReadStatus::BusError;
     }
     *pRangeMilliMeter = MeasurementData.RangeMilliMeter;
-    if (MeasurementData.RangeStatus != 0)
-      return false;
-    // clear interrupt
-    VL53L0X_ClearInterruptMask(&vl53l0x_dev, 0);
-    if (status != VL53L0X_ERROR_NONE)
-      return false;
-    return true;
+    // clear interrupt, also when the range is invalid
+    status = VL53L0X_ClearInterruptMask(&vl53l0x_dev, 0);
+    if (status != VL53L0X_ERROR_NONE) {
+      print_pal_error(status, "VL53L0X_ClearInterruptMask");
+      return ReadStatus::BusError;
+    }
+    return rangeStatus(MeasurementData);
   }
 
   bool setTimingBudget(uint32_t TimingBudgetMicroSeconds) {
@@ -266,6 +279,11 @@ protected:
   static void IRAM_ATTR gpio1_isr(void *arg) {
     VL53L0X *obj = static_cast<VL53L0X *>(arg);
     xSemaphoreGiveFromISR(obj->xSemaphore, NULL);
+  }
+  static ReadStatus
+  rangeStatus(const VL53L0X_RangingMeasurementData_t &MeasurementData) {
+    return MeasurementData.RangeStatus == 0 ? ReadStatus::Done
+                                            : ReadStatus::OutOfRange;
   }
   static VL53L0X_Error print_pal_error(VL53L0X_Error status,
                                        const char *method) {

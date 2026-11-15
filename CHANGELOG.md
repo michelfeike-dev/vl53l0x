@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Breaking:** `read()` and `readSingleWith*()` return
+  `VL53L0X::ReadStatus` (`Done`, `OutOfRange`, `BusError`) instead of `bool`;
+  replace `if (sensor.read(&mm))` with
+  `if (sensor.read(&mm) == VL53L0X::ReadStatus::Done)`
+- `readSingleWithDelay()` and `readSingleWithInterrupt()` clear the interrupt
+  also after an invalid range
 - Rename `examples/` to `projects/`; the repository focuses on measurement
   projects with the sensor
 - accuracy: evaluation script `eval/evaluate.py` with datasheet limits per

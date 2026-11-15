@@ -24,10 +24,10 @@ filt.clean();                          // reset after a failed reading
 
 ### Configuration
 
-| Constant        | Default | Meaning                                   |
-|-----------------|---------|-------------------------------------------|
-| `OFFSET_MM`     | 0       | Offset from [calibration](../calibration) |
-| `FILTER_WINDOW` | 5       | Median window, odd                        |
+| Constant         | Default | Meaning                                    |
+|------------------|---------|--------------------------------------------|
+| `OFFSET_MM`      | 0       | Offset from [calibration](../calibration)  |
+| `FILTER_WINDOW`  | 5       | Median window, odd                         |
 
 ### Build and Flash
 
@@ -46,8 +46,17 @@ delay):
 I (1234) polling: 512 [mm]
 ```
 
-A failed reading logs `ERROR` and clears the filter with `filt.clean()`.
-The next valid reading starts a new window, so no stale values from before
-the error enter the median.
+### Error Handling
+
+`sensor.read()` returns a `VL53L0X::ReadStatus`:
+
+| Status       | Cause                                         | Reaction                           |
+|--------------|-----------------------------------------------|------------------------------------|
+| `Done`       | Valid range                                   | Filter and log the value           |
+| `OutOfRange` | No valid target (sigma, signal or phase fail) | Clear the filter, log `NO TARGET`  |
+| `BusError`   | I2C or API error                              | Clear the filter, log `BUS ERROR n` with the count of bus errors in a row |
+
+Clearing the filter with `filt.clean()` makes the next valid reading start a
+new window, so no stale values from before the error enter the median.
 
 To filter a recorded log offline, see [accuracy](../accuracy#median-filter).

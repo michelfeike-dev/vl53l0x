@@ -77,7 +77,7 @@ extern "C" void app_main(void) {
       }
 
       for (int i = 0; i < NUM_MEASUREMENTS; i++) {
-        if (sensor.read(&data)) {
+        if (sensor.read(&data) == VL53L0X::ReadStatus::Done) {
           ESP_LOGI(TAG, "MEASUREMENT %d: %" PRIu16 " [mm]", i, data);
           meas.push_back(data);
           vTaskDelay(pdMS_TO_TICKS(10));
