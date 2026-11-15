@@ -54,7 +54,7 @@ I (1234) polling: 512 [mm]
 |--------------|-----------------------------------------------|------------------------------------|
 | `Done`       | Valid range                                   | Filter and log the value           |
 | `OutOfRange` | No valid target (sigma, signal or phase fail) | Clear the filter, log `NO TARGET`  |
-| `BusError`   | I2C or API error                              | Clear the filter, log `BUS ERROR n` with the count of bus errors in a row |
+| `BusError`   | I2C or API error                              | Clear the filter, log `BUS ERROR`  |
 
 Clearing the filter with `filt.clean()` makes the next valid reading start a
 new window, so no stale values from before the error enter the median.

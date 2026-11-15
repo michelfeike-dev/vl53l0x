@@ -50,24 +50,21 @@ extern "C" void app_main(void) {
 
   uint16_t data = 0;
   MedianFilter<FILTER_WINDOW> filt;
-  int bus_errors = 0;
 
   while (true) {
     switch (sensor.read(&data)) {
     case VL53L0X::ReadStatus::Done:
-      bus_errors = 0;
       ESP_LOGI(TAG, "%" PRIu16 " [mm]", filt.update(data));
       break;
 
     case VL53L0X::ReadStatus::OutOfRange:
-      bus_errors = 0;
       filt.clean();
       ESP_LOGW(TAG, "NO TARGET");
       break;
 
     case VL53L0X::ReadStatus::BusError:
       filt.clean();
-      ESP_LOGE(TAG, "BUS ERROR %d", ++bus_errors);
+      ESP_LOGE(TAG, "BUS ERROR");
       break;
     }
     vTaskDelay(pdMS_TO_TICKS(10));
