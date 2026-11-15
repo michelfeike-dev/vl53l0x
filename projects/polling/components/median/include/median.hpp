@@ -22,6 +22,12 @@ public:
     return *mid;
   }
 
+  void clean() {
+    buf_.fill(0);
+    head_ = 0;
+    count_ = 0;
+  }
+
 private:
   std::array<uint16_t, N> buf_{};
   std::size_t head_ = 0;

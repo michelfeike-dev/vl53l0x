@@ -18,14 +18,14 @@ Measurement projects with the VL53L0X Time-of-Flight sensor.
 |-------------------------------------|-------------------------------------------------|
 | [calibration](projects/calibration) | Offset definition of the sensor                 |
 | [accuracy](projects/accuracy)       | Accuracy determination at stepped target distances |
-| [filter](projects/filter)           | Noise reduction using a median filter           |
+| [polling](projects/polling)         | Continuous measurement with median filter       |
 
 ## Hardware
 
-| Component    | Connection                                         |
-|--------------|----------------------------------------------------|
-| Board        | ESP32-S3                                           |
-| VL53L0X      | SDA → GPIO 8, SCL → GPIO 9, 3.3 V, GND             |
+| Component    | Connection                             |
+|--------------|----------------------------------------|
+| Board        | ESP32-S3                               |
+| VL53L0X      | SDA → GPIO 8<br>SCL → GPIO 9<br>VCC → 3.3 V<br>GND → GND|
 
 Note: 4.7 kΩ pull-ups on SDA and SCL.
 
@@ -92,4 +92,6 @@ vl53l0x/
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+The ST VL53L0X API is BSD-3-Clause licensed by STMicroelectronics.
+
+MIT, see [LICENSE](LICENSE). 
