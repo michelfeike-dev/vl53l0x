@@ -18,7 +18,7 @@ Measurement projects with the VL53L0X Time-of-Flight sensor.
 |-------------------------------------|-------------------------------------------------|
 | [calibration](projects/calibration) | Offset definition of the sensor                 |
 | [accuracy](projects/accuracy)       | Accuracy determination at stepped target distances |
-| [filter](projects/filter)           | Noise reduction using a median filter           |
+| [polling](projects/polling)         | Continuous measurement with median filter       |
 
 ## Hardware
 
