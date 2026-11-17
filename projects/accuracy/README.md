@@ -108,21 +108,45 @@ The median follows a change of the distance with a delay of $\frac{N-1}{2} \cdot
 | 33 ms         | ≈ 33 ms | ≈ 66 ms       |
 | 200 ms        | ≈ 200 ms | ≈ 400 ms     |
 
-#### Evaluation
-```sh
-python3 eval/filter.py data/s1.log -n 5 -c data/s1_med5.csv -p data/s1_med5.png -m default
-```
+## Measurement
 
-| Parameter        | Required | Description                                  |
-|------------------|----------|----------------------------------------------|
-| `log`            | no       | Input file of the measurement                |
-| `-n`, `--window` | yes      | Window $N$, odd                              |
-| `-c`, `--csv`    | yes      | Output CSV file                              |
-| `-p`, `--plot`   | no       | Save the plot                                |
-| `-o`, `--output` | no       | Save the filtered log                        |
-| `-m`, `--mode`   | no       | `default` (±4 %)<br>`high-accuracy` (±3 %)<br>default `default` |
-| `--spec`         | no       | Override the datasheet accuracy [%]          |
+<img src="doc/s1_raw.png" alt="Raw" width="49%"> <img src="doc/s1_ha.png" alt="Median N=5" width="49%">
 
-#### Example
+<img src="doc/s1_med3.png" alt="Raw" width="49%"> <img src="doc/s1_med5.png" alt="Median N=5" width="49%">
 
-<img src="doc/s1_raw.png" alt="Raw" width="49%"> <img src="doc/s1_med5.png" alt="Median N=5" width="49%">
+#### What are the results?
+- Default mode: the 95 % range (bias ± 2σ) stays within the datasheet limit
+  of ±4 % up to 700 mm for sensor 2. Sensor 1 slightly exceeds it at 200 and
+  300 mm (4.3 % and 4.4 %).
+- High accuracy mode: the standard deviation drops by a factor of 2 to 2.5,
+  close to the expected √6 ≈ 2.4. The bias stays the same, because it is a
+  systematic error of the setup.
+- The bias crosses zero between 550 and 650 mm.
+- Beyond 700 mm the sensor reads up to 46 mm too short. Worst case: 6.7 %
+  at 1000 mm.
+- At 1200 mm the sensor reaches its range limit: the bias drops again, but
+  the standard deviation rises to 12–20 mm in default mode.
+
+#### Why does the error grow with distance?
+- The sensor has a 25° [FoV](../../README.md#field-of-view). Its light spot grows linearly with the
+distance, with a diameter of about 0.44 × distance.
+- The lower edge of the cone hits the ground from about 180 mm. The ground
+  lies between sensor and target, so it pulls the reading towards shorter
+  distances.
+- The echo of the target gets weaker with 1/d², so the share of the ground
+  grows with the distance.
+- From about 700 mm the light spot is larger than the A4 sheet.
+What are the error sources?
+- Random sensor noise
+- Ground and background inside the field of view
+- Target smaller than the light spot
+- Individual sensor offsets within the datasheet specification
+- Measurement setup (target distance, alignment of sensor and target)
+
+#### How can I improve accuracy?
+- Mount the sensor at least half a spot diameter above the ground
+  (≥ 266 mm for 1200 mm)
+- Use a target larger than the light spot (≥ 532 mm for 1200 mm)
+- Offset and crosstalk calibration
+- High accuracy mode or averaging against random noise
+- Median filter against outliers
